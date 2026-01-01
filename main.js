@@ -8,11 +8,38 @@ const {
   nativeImage,
 } = require("electron");
 const path = require("path");
+const fs = require("fs");
+
+// 데이터 저장 경로 설정
+const dataPath = path.join(app.getPath("userData"), "routine-data.json");
 
 // 액세스 거부 오류 방지를 위한 설정
 app.commandLine.appendSwitch("disable-gpu");
 app.commandLine.appendSwitch("disable-software-rasterizer");
 app.commandLine.appendSwitch("disable-dev-shm-usage");
+
+ipcMain.handle("save-data", async (event, data) => {
+  try {
+    fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), "utf8");
+    return true;
+  } catch (error) {
+    console.error("Save Data Error:", error);
+    return false;
+  }
+});
+
+ipcMain.handle("load-data", async () => {
+  try {
+    if (fs.existsSync(dataPath)) {
+      const data = fs.readFileSync(dataPath, "utf8");
+      return JSON.parse(data);
+    }
+    return null;
+  } catch (error) {
+    console.error("Load Data Error:", error);
+    return null;
+  }
+});
 
 let mainWindow;
 let tray = null;

@@ -1,13 +1,15 @@
 let checklistItems = [];
 
-function loadItems() {
+async function loadItems() {
   try {
-    const saved = localStorage.getItem("routineChecklist");
-    if (saved) {
-      checklistItems = JSON.parse(saved);
-      console.log("로드된 항목:", checklistItems.length);
-    } else {
-      console.log("저장된 데이터 없음");
+    if (window.electronAPI && window.electronAPI.loadData) {
+      const saved = await window.electronAPI.loadData();
+      if (saved) {
+        checklistItems = saved;
+        console.log("로드된 항목:", checklistItems.length);
+      } else {
+        console.log("저장된 데이터 없음");
+      }
     }
   } catch (error) {
     console.error("로드 오류:", error);
@@ -15,28 +17,16 @@ function loadItems() {
   }
 }
 
-function saveItems() {
+async function saveItems() {
   try {
-    localStorage.setItem("routineChecklist", JSON.stringify(checklistItems));
-    console.log("저장 성공 - 항목 수:", checklistItems.length);
-    return true;
+    if (window.electronAPI && window.electronAPI.saveData) {
+      await window.electronAPI.saveData(checklistItems);
+      console.log("저장 성공 - 항목 수:", checklistItems.length);
+      return true;
+    }
   } catch (error) {
     console.error("저장 오류:", error);
     let msg = "저장 실패: " + error.message;
-
-    // 액세스 거부 구체적 분석
-    if (
-      error.message &&
-      (error.message.includes("Access is denied") ||
-        error.message.includes("EPERM") ||
-        error.message.includes("EACCES"))
-    ) {
-      msg =
-        "⛔ 액세스 거부됨: 시스템이 데이터 저장을 차단했습니다.\n\n원인: 프로그램이 보호된 폴더(예: Documents)에 쓰기를 시도했거나 권한이 부족합니다.\n해결: 프로그램을 관리자 권한으로 실행하거나, 데이터 폴더 위치를 변경해야 합니다.";
-    } else if (error.name === "QuotaExceededError") {
-      msg = "⛔ 저장 공간 부족: 로컬 스토리지 용량이 꽉 찼습니다.";
-    }
-
     alert(msg);
     return false;
   }
@@ -170,10 +160,13 @@ document.getElementById("newItem").addEventListener("keypress", function (e) {
   }
 });
 
-loadItems();
-renderChecklist();
+// 초기화 시 비동기 로드 대기
+async function init() {
+  await loadItems();
+  renderChecklist();
 
-// Check every 1 hour (3600000 ms)
-setInterval(checkAndNotify, 3600000);
+  // Check every 1 hour (3600000 ms)
+  setInterval(checkAndNotify, 3600000);
+}
 
-setInterval(checkAndNotify, 3600000);
+init();

@@ -6,14 +6,34 @@
   "scripts": {
     "start": "electron .",
     "dev": "nodemon --exec electron . --ext js,html,css",
+    "dist": "electron-builder --windows",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "build": {
+    "appId": "com.routine.app",
+    "productName": "MyRoutine",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
   "keywords": [],
-  "author": "",
+  "author": "RoutineTeam",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "electron": "^39.2.7",
+    "electron-builder": "^26.0.12",
     "nodemon": "^3.1.11"
   }
 }
