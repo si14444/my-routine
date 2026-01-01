@@ -155,8 +155,8 @@ function checkAndNotify() {
 
     if (window.electronAPI && window.electronAPI.showNotification) {
       window.electronAPI.showNotification({
-        title: "루틴 체크리스트",
-        body: `완료하지 않은 항목이 ${uncheckedCount}개 있습니다: ${itemTexts}${
+        title: "Routine Check",
+        body: `${uncheckedCount} tasks remaining: ${itemTexts}${
           uncheckedItems.length > 3 ? "..." : ""
         }`,
       });
@@ -172,5 +172,8 @@ document.getElementById("newItem").addEventListener("keypress", function (e) {
 
 loadItems();
 renderChecklist();
+
+// Check every 1 hour (3600000 ms)
+setInterval(checkAndNotify, 3600000);
 
 setInterval(checkAndNotify, 3600000);
