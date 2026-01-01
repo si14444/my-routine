@@ -1,41 +1,222 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Routine</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Routine</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f0f0f0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .welcome {
-            text-align: center;
-            color: #666;
-            margin-top: 20px;
-        }
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+      :root {
+        --bg-color: #0f0f11;
+        --card-bg: #1a1a1d;
+        --border-color: #2a2a2e;
+        --text-primary: #f0f0f0;
+        --text-secondary: #888888;
+        --accent-color: #6366f1; /* Indigo */
+        --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      }
+
+      * {
+        box-sizing: border-box;
+        outline: none;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: none; /* Removed noise */
+      }
+
+      .container {
+        width: 100%;
+        max-width: 500px;
+        padding: 30px;
+      }
+
+      h1 {
+        font-weight: 600;
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #fff;
+        letter-spacing: -0.5px;
+        text-transform: none;
+      }
+
+      /* Soft Input Section */
+      .input-section {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px; /* Soft Rounding */
+        padding: 6px;
+        display: flex;
+        gap: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+
+      .input-section:focus-within {
+        border-color: #444;
+      }
+
+      .cyber-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 12px 16px;
+        color: #fff;
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+      }
+
+      .cyber-input::placeholder {
+        color: #555;
+      }
+
+      .cyber-button {
+        background: var(--accent-gradient);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 0 20px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      }
+
+      .cyber-button:hover {
+        opacity: 0.9;
+        transform: none;
+      }
+
+      .checklist {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .checklist li {
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px; /* Soft Rounding */
+        transition: all 0.2s ease;
+      }
+
+      /* Hover Effect */
+      .checklist li:hover {
+        border-color: #555;
+        transform: translateY(-2px);
+        background: #202025;
+      }
+
+      .item-text {
+        flex: 1;
+        font-size: 16px;
+        color: var(--text-primary);
+        font-weight: 500;
+        transition: all 0.5s ease;
+        padding-left: 10px;
+        position: relative;
+      }
+
+      /* Completed Row Style - Ghost Mode */
+      .checklist li.active-row {
+        background: transparent; /* No background change */
+        border-color: #2a2a2e; /* No border change */
+        opacity: 0.3; /* "Faint feel" - nearly gone */
+      }
+
+      .checklist li.active-row .item-text {
+        color: #666; /* Grayed out */
+        text-decoration: line-through; /* "Long horizontal line" */
+        text-decoration-color: #666;
+        text-decoration-thickness: 1.5px;
+      }
+
+      /* No check mark */
+      .checklist li.active-row::before {
+        content: none;
+      }
+
+      /* Delete button stays accessible */
+      .checklist li.active-row:hover {
+        opacity: 0.8; /* Slight bright on hover to allow deletion */
+      }
+
+      .delete-btn {
+        background: transparent;
+        border: none;
+        color: #555;
+        font-size: 12px;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.2s;
+        padding: 6px 10px;
+      }
+
+      .checklist li:hover .delete-btn {
+        opacity: 1;
+      }
+
+      .delete-btn:hover {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 6px;
+      }
+
+      .status-panel {
+        margin-top: 40px;
+        text-align: center;
+      }
+
+      .status-text {
+        color: #444;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>My Routine</h1>
-        <div class="welcome">
-            <p>Welcome to your Electron application!</p>
-            <p>Start building your routine management app here.</p>
-        </div>
+      <h1>My-Routine</h1>
+
+      <div class="input-section">
+        <input
+          type="text"
+          id="newItem"
+          class="cyber-input"
+          placeholder="New entry..."
+        />
+        <button onclick="addItem()" class="cyber-button">Add</button>
+      </div>
+
+      <div class="list-section">
+        <ul class="checklist" id="checklist"></ul>
+      </div>
+
+      <div class="status-panel">
+        <div class="status-text" id="status">Ready</div>
+      </div>
     </div>
-</body>
+
+    <script src="app.js"></script>
+  </body>
 </html>
